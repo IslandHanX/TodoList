@@ -68,7 +68,7 @@ These tests cover:
 - Creating a todo without a title (400)
 - Listing + filtering todos (status/priority/query)
 - Updating + deleting a todo
-<img width="253" height="162" alt="image" src="https://github.com/user-attachments/assets/2be98d1a-37c3-4752-a76c-97056524f380" />
+<img width="506" height="324" alt="image" src="https://github.com/user-attachments/assets/2be98d1a-37c3-4752-a76c-97056524f380" />
 
 ---
 
