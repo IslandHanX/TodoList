@@ -255,7 +255,7 @@ Delete a todo.
 ```
 /backend
   src/
-    index.js            # Express app bootstrap (CORS, JSON, routes)
+    index.js            # Express app (CORS, JSON, routes)
     db.js               # better-sqlite3 connection + schema init
     routes/
       todos.js          # All /todos endpoints, validation, logging
@@ -272,7 +272,7 @@ Delete a todo.
       Composer.jsx      # Todo creation form with voice input
       Toolbar.jsx       # Search and filter controls
       TodoGrid.jsx      # List view component
-      BoardView.jsx     # Kanban board view
+      BoardView.jsx     # Board view
       MiniCalendar.jsx  # Calendar navigation
       DailyList.jsx     # Daily todo list
       Modal.jsx         # Error/success modals
