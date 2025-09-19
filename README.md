@@ -1,4 +1,4 @@
-# My Todo List
+# 📒 My Todo List
 
 A tiny full-stack todo app:
 
@@ -13,11 +13,11 @@ A tiny full-stack todo app:
 
 ```bash
 # from repo root
-docker compose up -d
+docker-compose up -d
 
 # View logs
-docker compose logs -f api
-docker compose logs -f web
+docker-compose logs -f api
+docker-compose logs -f web
 ```
 
 - **Frontend (nginx):** http://localhost:8080  
@@ -36,8 +36,7 @@ npm run dev            # starts http://localhost:4000
 
 # 2) Frontend
 cd ../frontend
-cp .env.example .env   # if you have an example file; otherwise create .env (see below)
-# Make sure .env contains: VITE_API_BASE=http://localhost:4000
+# Create .env file with: VITE_API_BASE=http://localhost:4000
 npm i
 npm run dev            # opens http://localhost:5173
 ```
@@ -61,7 +60,7 @@ cd backend
 npm i
 npm test
 # or
-node tests/run.js
+node tests/todos.test.mjs
 ```
 
 These tests cover:
@@ -240,8 +239,8 @@ docker-compose.yml      # Orchestration for api + web
   # dev
   cd backend && npm run dev
 
-  # docker
-  docker compose logs -f api
+# docker
+docker-compose logs -f api
   ```
 
 ---
