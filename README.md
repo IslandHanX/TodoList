@@ -2,14 +2,31 @@
 
 A tiny full-stack todo app:
 
-- **Frontend:** React + Vite, custom UI (light/dark), voice input (Web Speech API), calendar view, kanban view.  
-- **Backend:** Express + better-sqlite3 (SQLite), simple REST API with validation & structured errors.
+- **Frontend:** React + Vite, custom UI (light/dark), voice input (Web Speech API), list view, calendar view, board view.  
+- **Backend:** Express + better-sqlite3 (SQLite), REST API with validation & structured errors.
 
 ---
 
 ## 1) How to install & run
 
-### Option A — Run locally (recommended for development)
+### Option A — Run locally (recommended for development)Run with Docker Compose (for a local “prod-like” run)
+
+```bash
+# from repo root
+docker compose up -d
+
+# View logs
+docker compose logs -f api
+docker compose logs -f web
+```
+
+- **Frontend (nginx):** http://localhost:8080  
+- **API:** http://localhost:4000
+
+> Note: In Docker mode the frontend is a static production build served by nginx.  
+> Ensure `frontend/.env` had `VITE_API_BASE=http://localhost:4000` **before** building the image.
+
+### Option B — Run locally (recommended for development)
 
 ```bash
 # 1) Backend
@@ -32,24 +49,6 @@ VITE_API_BASE=http://localhost:4000
 
 Open the frontend at the URL Vite prints (usually http://localhost:5173).  
 The app will call the API at `http://localhost:4000`.
-
-### Option B — Run with Docker Compose (for a local “prod-like” run)
-
-```bash
-# from repo root
-docker compose up -d
-
-# View logs
-docker compose logs -f api
-docker compose logs -f web
-```
-
-- **Frontend (nginx):** http://localhost:8080  
-- **API:** http://localhost:4000
-
-> Note: In Docker mode the frontend is a static production build served by nginx.  
-> Ensure `frontend/.env` had `VITE_API_BASE=http://localhost:4000` **before** building the image.
-
 ---
 
 ## 2) How to run the tests
