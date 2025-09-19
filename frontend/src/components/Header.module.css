@@ -1,5 +1,6 @@
 /* src/components/Header.module.css */
 
+/* header bar: title on the left, controls on the right */
 .header {
   display: flex;
   align-items: center;
@@ -7,6 +8,7 @@
   padding: 18px 20px 6px;
 }
 
+/* app title styling */
 .title {
   margin: 0;
   font-family: var(--font-head);
@@ -17,13 +19,14 @@
   align-items: center;
 }
 
-/* 右上角一排图标按钮 */
+/* right-aligned action buttons row */
 .actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
+/* icon button base styles */
 .iconBtn {
   width: 40px;
   height: 40px;
@@ -39,6 +42,7 @@
     color 0.15s ease, border-color 0.15s ease;
 }
 
+/* hover feedback (light + dark) */
 .iconBtn:hover {
   background: rgba(0, 0, 0, 0.04);
 }
@@ -46,11 +50,12 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* pressed feedback */
 .iconBtn:active {
   transform: translateY(1px);
 }
 
-/* 当前选中的视图高亮 */
+/* active view highlight */
 .active {
   background: var(--accent);
   color: var(--accent-ink);

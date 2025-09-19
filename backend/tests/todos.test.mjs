@@ -1,9 +1,9 @@
 // tests/run-api-tests.mjs
-// Node 18+ 内置 fetch；确保后端已启动在 BASE（默认 http://localhost:4000）
-// 可用 BASE_URL 环境变量覆盖：BASE_URL=http://localhost:4000 node tests/run-api-tests.mjs
 
+// base URL for the running API; can be overridden via BASE_URL env var
 const BASE = process.env.BASE_URL || 'http://localhost:4000';
 
+// tiny fetch wrapper that returns { status, data } and tolerates empty bodies
 async function request(method, path, body) {
   const res = await fetch(`${BASE}${path}`, {
     method,
@@ -15,12 +15,14 @@ async function request(method, path, body) {
   return { status: res.status, data };
 }
 
+// minimal assertion helpers for readable failures
 function assert(cond, msg) {
   if (!cond) throw new Error(msg);
 }
 function assertEq(a, b, msg = `expected ${JSON.stringify(b)}, got ${JSON.stringify(a)}`) {
   if (a !== b) throw new Error(msg);
 }
+// unique-ish title generator to avoid collisions across test runs
 function title(t) { return `${t} #${Date.now()}-${Math.random().toString(36).slice(2,7)}`; }
 
 // ---- Core happy path tests ----
@@ -48,9 +50,9 @@ async function testCreateWithoutTitle400() {
   assertEq(data?.error?.message, 'Title is required');
 }
 
-// ---- More feature tests ----
+// ---- Feature tests for filtering and updates ----
 async function testFilters_query_status_priority() {
-  // 先造数据：两个 pending，一个 completed；不同优先级与包含关键字
+  // seed three items: two pending (high/medium) that contain "search", one completed (low) without it
   const t1 = `Alpha ${title('search')}`;
   const t2 = `Beta ${title('search')}`;
   const t3 = `Gamma ${title('other')}`;
@@ -60,12 +62,12 @@ async function testFilters_query_status_priority() {
   const c = await request('POST', '/todos', { title: t3, priority: 'low' });
   assertEq(a.status, 201); assertEq(b.status, 201); assertEq(c.status, 201);
 
-  // 标记 c 为 completed
+  // mark t3 as completed
   const done = await request('PUT', `/todos/${c.data.id}`, { completed: true });
   assertEq(done.status, 200);
   assertEq(done.data.completed, true);
 
-  // 1) q=search 应命中 t1+t2
+  // 1) q=search should match t1 and t2 only
   const qres = await request('GET', `/todos?q=search`);
   assertEq(qres.status, 200);
   const has1 = qres.data.some(x => x.id === a.data.id);
@@ -74,13 +76,13 @@ async function testFilters_query_status_priority() {
   assert(has1 && has2, 'q=search should include t1 & t2');
   assert(!has3, 'q=search should not include t3');
 
-  // 2) status=completed 只应包含 c
+  // 2) status=completed should include only c
   const sres = await request('GET', `/todos?status=completed`);
   assertEq(sres.status, 200);
   assert(sres.data.some(x => x.id === c.data.id), 'completed should include c');
   assert(!sres.data.some(x => x.id === a.data.id), 'completed should not include a');
 
-  // 3) priority=high 只应包含 a
+  // 3) priority=high should include only a
   const pres = await request('GET', `/todos?priority=high`);
   assertEq(pres.status, 200);
   assert(pres.data.some(x => x.id === a.data.id), 'priority=high should include a');
@@ -94,6 +96,7 @@ async function testUpdateTitleAndPriority() {
   assertEq(t0.status, 201);
   const id = t0.data.id;
 
+  // change both title and priority
   const nextTitle = title('updated');
   const up = await request('PUT', `/todos/${id}`, { title: nextTitle, priority: 'high' });
   assertEq(up.status, 200);
@@ -106,6 +109,7 @@ async function testToggleCompleted() {
   assertEq(created.status, 201);
   const id = created.data.id;
 
+  // flip completed to true, then back to false
   const t1 = await request('PUT', `/todos/${id}`, { completed: true });
   assertEq(t1.status, 200);
   assertEq(t1.data.completed, true);
@@ -120,6 +124,7 @@ async function testDeleteAndThen404() {
   assertEq(created.status, 201);
   const id = created.data.id;
 
+  // delete should 204, subsequent read should 404
   const del = await request('DELETE', `/todos/${id}`);
   assertEq(del.status, 204);
 
@@ -135,7 +140,7 @@ async function testInvalidPriority400() {
 }
 
 async function testTooLongTitle400() {
-  const long = 'x'.repeat(201); // 后端限制 >200
+  const long = 'x'.repeat(201); // backend limit is > 200
   const res = await request('POST', '/todos', { title: long, priority: 'low' });
   assertEq(res.status, 400);
   assertEq(res.data?.error?.message, 'Title is too long (max 200)');
@@ -161,7 +166,7 @@ async function testDeleteNonExistent404() {
   assertEq(res.data?.error?.message, 'Todo not found');
 }
 
-// ---- Runner ----
+// ---- Simple test runner ----
 async function runOne(name, fn) {
   const start = Date.now();
   try {
@@ -207,6 +212,7 @@ async function main() {
   }
 }
 
+// entry point with top-level error guard
 main().catch(err => {
   console.error('Unexpected error:', err);
   process.exitCode = 1;

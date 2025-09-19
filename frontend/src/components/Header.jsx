@@ -11,10 +11,11 @@ import { TbLayoutKanban } from "react-icons/tb";
 export default function Header({ dark, onToggleTheme, view, setView }) {
   return (
     <header className={styles.header}>
+      {/* app title */}
       <h1 className={styles.title}>📒 My Todo List</h1>
 
       <div className={styles.actions}>
-        {/* 视图切换：List / Calendar / Board */}
+        {/* view switcher: list */}
         <button
           className={`${styles.iconBtn} ${
             view === "list" ? styles.active : ""
@@ -25,6 +26,8 @@ export default function Header({ dark, onToggleTheme, view, setView }) {
         >
           <MdViewList size={20} />
         </button>
+
+        {/* view switcher: calendar */}
         <button
           className={`${styles.iconBtn} ${
             view === "calendar" ? styles.active : ""
@@ -35,6 +38,8 @@ export default function Header({ dark, onToggleTheme, view, setView }) {
         >
           <MdCalendarMonth size={20} />
         </button>
+
+        {/* view switcher: board */}
         <button
           className={`${styles.iconBtn} ${
             view === "board" ? styles.active : ""
@@ -46,7 +51,7 @@ export default function Header({ dark, onToggleTheme, view, setView }) {
           <TbLayoutKanban size={20} />
         </button>
 
-        {/* 主题切换：跟在右边 */}
+        {/* theme toggle button */}
         <button
           className={styles.iconBtn}
           onClick={onToggleTheme}

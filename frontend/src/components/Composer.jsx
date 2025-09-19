@@ -1,30 +1,38 @@
+// src/components/Composer.jsx
 import { useEffect, useRef, useState } from "react";
 import Select from "./Select";
 import styles from "./Composer.module.css";
-import { RiMicFill, RiMicOffFill, RiAddLine } from "react-icons/ri"; // ← 用纯加号
+import { RiMicFill, RiMicOffFill, RiAddLine } from "react-icons/ri"; // icons for mic and add
 
 export default function Composer({ onAdd }) {
+  // input fields
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("");
+
+  // voice input state and refs
   const [recording, setRecording] = useState(false);
   const recRef = useRef(null);
 
-  const baseRef = useRef(""); // 开始时的文本
-  const finalRef = useRef(""); // 已确认的最终结果累积
+  // buffers for building the dictated text
+  const baseRef = useRef(""); // text that existed when recording started
+  const finalRef = useRef(""); // accumulated confirmed (final) transcript
 
+  // set up Web Speech API recognition and wire event handlers
   useEffect(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) return;
     const rec = new SR();
     rec.lang = "en-US";
-    rec.interimResults = true; // 允许临时结果
+    rec.interimResults = true;
     rec.maxAlternatives = 1;
 
+    // when recording begins, snapshot current input and clear the final buffer
     rec.onstart = () => {
-      baseRef.current = title; // 记住开始时已有内容
+      baseRef.current = title;
       finalRef.current = "";
     };
 
+    // on each result, fold in the latest final and keep only the newest interim
     rec.onresult = (e) => {
       let interim = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -33,25 +41,27 @@ export default function Composer({ onAdd }) {
           finalRef.current +=
             (finalRef.current ? " " : "") + r[0].transcript.trim();
         } else {
-          interim = r[0].transcript.trim(); // 只保留“当前临时片段”
+          interim = r[0].transcript.trim();
         }
       }
-      // 用 base + final + interim 组装“当前显示值”（临时片段只是替换展示）
+      // live value = base + final + interim (interim is display-only)
       const composed = [baseRef.current, finalRef.current, interim]
         .filter(Boolean)
         .join(" ");
       setTitle(composed);
     };
 
+    // stop state if the engine ends or errors
     rec.onend = () => setRecording(false);
     rec.onerror = () => setRecording(false);
 
     recRef.current = rec;
   }, [title]);
 
+  // start/stop the speech recognizer
   function toggleVoice() {
     const rec = recRef.current;
-    if (!rec) return; // 不支持
+    if (!rec) return; // unsupported
     if (recording) {
       try {
         rec.stop();
@@ -65,6 +75,7 @@ export default function Composer({ onAdd }) {
     }
   }
 
+  // submit new todo via parent callback and reset fields
   async function handleSubmit(e) {
     e.preventDefault();
     await onAdd({ title, priority: priority || "low" });
@@ -72,6 +83,7 @@ export default function Composer({ onAdd }) {
     setPriority("");
   }
 
+  // layout: input + mic button, priority select, and add button
   return (
     <form className={styles.composer} onSubmit={handleSubmit}>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -81,7 +93,6 @@ export default function Composer({ onAdd }) {
           placeholder="Add a new task…"
           className="input"
         />
-        {/* 语音按钮：不支持时可隐藏或置灰 */}
         <button
           type="button"
           className="button ghost"

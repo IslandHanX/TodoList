@@ -2,6 +2,7 @@
 import Sticker from "./Sticker";
 import styles from "./TodoGrid.module.css";
 
+// responsive grid of todo cards
 export default function TodoGrid({ todos, onToggle, onEdit, onDelete }) {
   return (
     <div className={styles.grid}>

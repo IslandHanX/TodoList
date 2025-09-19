@@ -1,4 +1,6 @@
-/* 布局保持你之前的网格 */
+/* src/components/Composer.module.css */
+
+/* layout: input, priority select, add button */
 .composer {
   display: grid;
   grid-template-columns: 1fr 160px auto;
@@ -6,7 +8,7 @@
   padding: 0 0 16px;
 }
 
-/* 图标“Add”按钮（桌面：与输入同高，方形） */
+/* primary add button: square, same height as input on desktop */
 .addBtn {
   width: 40px;
   height: 40px;
@@ -20,27 +22,31 @@
   cursor: pointer;
   box-shadow: var(--shadow-md);
   transition: transform 0.06s ease, box-shadow 0.15s ease, filter 0.15s ease;
-  padding: 0; /* 去掉默认内边距 */
-  font-size: 18px; /* “+” 更清晰 */
+  padding: 0; /* remove default padding */
+  font-size: 18px; /* clearer plus icon size */
 }
+
 .addBtn:hover {
   filter: brightness(1.05);
   box-shadow: var(--shadow-lg);
 }
+
 .addBtn:active {
   transform: translateY(1px);
 }
+
 .addBtn:focus-visible {
   outline: 2px solid rgba(91, 140, 255, 0.9);
   outline-offset: 2px;
 }
 
+/* dark theme: slightly brighter accent and softer border */
 [data-theme="dark"] .addBtn {
   background: color-mix(in srgb, var(--accent) 88%, white 12%);
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* 小屏：一列堆叠，按钮与输入/选择器“同宽” */
+/* responsive: stack fields and make the add button full-width on small screens */
 @media (max-width: 560px) {
   .composer {
     grid-template-columns: 1fr;
@@ -49,9 +55,9 @@
     width: 100% !important;
   }
   .addBtn {
-    width: 100%; /* ← 关键：占满这一列 */
-    height: 44px; /* 和输入控件同高 */
-    font-size: 20px; /* “+” 稍微大一点 */
-    border-radius: 12px; /* 造型保持一致 */
+    width: 100%; /* occupy full row */
+    height: 44px; /* match input height */
+    font-size: 20px; /* slightly larger icon */
+    border-radius: 12px; /* keep visual consistency */
   }
 }

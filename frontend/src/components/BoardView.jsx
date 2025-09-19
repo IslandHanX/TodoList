@@ -1,42 +1,51 @@
 // src/components/BoardView.jsx
 import { useState } from "react";
 import Sticker from "./Sticker";
-import "./BoardView.css"; // 可选：把下面 CSS 放这里
+import "./BoardView.css"; // styles for the two-column board layout
 
 export default function BoardView({ todos, onToggle, onDelete, onEdit }) {
-  const pending = todos.filter(t=>!t.completed);
-  const done = todos.filter(t=>t.completed);
+  // split todos into pending and completed lists
+  const pending = todos.filter((t) => !t.completed);
+  const done = todos.filter((t) => t.completed);
 
-  const [dragging, setDragging] = useState(null); // id
+  // track the id of the item currently being dragged
+  const [dragging, setDragging] = useState(null);
 
+  // begin drag: stash the id and populate the dataTransfer payload
   function onDragStart(e, todo) {
-    e.dataTransfer.setData("text/plain", String(todo.id));
     setDragging(todo.id);
   }
-  function onDragEnd() { setDragging(null); }
 
+  // end drag: clear local drag state
+  function onDragEnd() {
+    setDragging(null);
+  }
+
+  // drop handler: if moved across columns, toggle completion via parent callback
   async function handleDrop(targetCompleted) {
     if (!dragging) return;
-    const t = todos.find(x=>x.id === dragging);
+    const t = todos.find((x) => x.id === dragging);
     setDragging(null);
     if (!t || t.completed === targetCompleted) return;
-    // 直接用你现成的切换逻辑（后端已支持 completed）
     await onToggle?.(t);
   }
 
+  // render one column with a header and list of draggable stickers
   const renderCol = (title, items, targetCompleted) => (
     <div
       className="board-col"
-      onDragOver={(e)=>e.preventDefault()}
-      onDrop={()=>handleDrop(targetCompleted)}
+      onDragOver={(e) => e.preventDefault()} // allow dropping by preventing default
+      onDrop={() => handleDrop(targetCompleted)} // move item to this column
     >
-      <div className="board-col-head">{title} ({items.length})</div>
+      <div className="board-col-head">
+        {title} ({items.length})
+      </div>
       <div className="board-col-body">
-        {items.map(t=>(
+        {items.map((t) => (
           <div
             key={t.id}
-            draggable
-            onDragStart={(e)=>onDragStart(e,t)}
+            draggable // make wrapper draggable so Sticker stays simple
+            onDragStart={(e) => onDragStart(e, t)}
             onDragEnd={onDragEnd}
           >
             <Sticker
@@ -51,6 +60,7 @@ export default function BoardView({ todos, onToggle, onDelete, onEdit }) {
     </div>
   );
 
+  // two columns: left = pending, right = completed
   return (
     <div className="board">
       {renderCol("Pending", pending, false)}

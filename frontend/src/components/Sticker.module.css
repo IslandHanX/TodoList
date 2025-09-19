@@ -1,4 +1,6 @@
-/* ========== Card ========== */
+/* src/components/Sticker.module.css */
+
+/* ===== Card visuals and hover state ===== */
 .card {
   --card-min-h: 180px;
   --icon-pad: 56px;
@@ -59,7 +61,7 @@
     );
 }
 
-/* 完成态 */
+/* ===== Completed look (subtle, no lift) ===== */
 .completed {
   filter: brightness(0.92) saturate(0.85);
   opacity: 0.9;
@@ -70,7 +72,7 @@
   filter: brightness(0.92) saturate(0.85);
 }
 
-/* Dark */
+/* ===== Dark theme surfaces & hovers ===== */
 [data-theme="dark"] .card {
   background-color: var(--sticker-card);
   background-image: radial-gradient(
@@ -113,10 +115,10 @@
 [data-theme="dark"] .completed,
 [data-theme="dark"] .completed:hover,
 [data-theme="dark"] .completed:focus-within {
-  transform: none; /* 不上浮 */
-  box-shadow: var(--shadow-md); /* 不加阴影 */
-  filter: brightness(0.86) saturate(0.75); /* 保持完成态的黯淡 */
-  z-index: 0; /* 不抬层级 */
+  transform: none;
+  box-shadow: var(--shadow-md);
+  filter: brightness(0.86) saturate(0.75);
+  z-index: 0;
   background-image: radial-gradient(
       300px 170px at 16% 10%,
       rgba(255, 255, 255, 0.1),
@@ -133,10 +135,9 @@
       var(--mesh-line-dark) 0 1px,
       transparent 1px var(--mesh-gap)
     );
-  /* 上面这段 background-image 与暗色普通卡片一致，用来覆盖 .card:hover 的高光 */
 }
 
-/* 纸胶带 */
+/* ===== Decorative tape strip ===== */
 .tape {
   position: absolute;
   top: -10px;
@@ -158,10 +159,10 @@
   border-color: rgba(255, 255, 255, 0.18);
 }
 
-/* ========== Layout ========== */
+/* ===== Layout rows & alignment ===== */
 .row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto; /* checkbox | title/input | right ops */
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
 }
@@ -179,7 +180,7 @@
   gap: 8px;
 }
 
-/* 编辑态：右侧操作区换行到底部 */
+/* ===== Edit-mode layout (actions wrap below) ===== */
 .isEditing {
   grid-template-columns: auto minmax(0, 1fr);
 }
@@ -192,7 +193,7 @@
   margin-top: 8px;
 }
 
-/* 标题 / 折叠 */
+/* ===== Title text + optional clamping ===== */
 .title {
   margin: 0;
   font-family: var(--font-hand);
@@ -213,12 +214,12 @@
 .clamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  line-clamp: 3; /* ← 标准草案属性（新版浏览器逐步支持） */
-  -webkit-line-clamp: 3; /* ← 现阶段主要依赖这个 */
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
 
-/* 编辑输入 */
+/* ===== Multiline edit field ===== */
 .editInput {
   display: block;
   width: 100%;
@@ -231,7 +232,7 @@
   overflow: auto;
 }
 
-/* 第二行：时间 | 优先级（默认两列） */
+/* ===== Meta row (timestamp + priority) ===== */
 .metaRow {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -242,7 +243,7 @@
   padding-right: 120px;
 }
 
-/* 浏览态：徽章固定右下 */
+/* badge pinned bottom-right in view mode */
 .metaRow > .badge {
   position: absolute;
   right: calc(12px + 32px + 8px);
@@ -251,7 +252,7 @@
   pointer-events: none;
 }
 
-/* 编辑态行：收窄右侧并缩小时间字号 */
+/* edit-mode tweaks for meta row */
 .isEditing + .metaRow {
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -263,11 +264,11 @@
   line-height: 1.2;
   opacity: 0.7;
   margin-top: 2px;
-  overflow: hidden;           /* 超出隐藏 */
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 时间（默认） */
+/* ===== Timestamp text ===== */
 .time {
   font-size: 13px;
   line-height: 1.2;
@@ -275,18 +276,16 @@
   white-space: nowrap;
 }
 
-/* —— 下拉宽度约束（防止撑出卡片） —— */
+/* ===== Priority select sizing & menu alignment ===== */
 .prioritySelect {
-  width: 160px; /* 常规宽度 */
-  max-width: 160px; /* 给 auto 列“确定宽度” */
+  width: 160px;
+  max-width: 160px;
   min-width: 0;
   justify-self: end;
 }
-/* 覆盖 Select 的全局触发器 100% 宽度（仅卡片内） */
 .prioritySelect :global(.selectTrigger) {
   width: auto;
 }
-/* 菜单靠右对齐，避免向右溢出卡片 */
 .prioritySelect :global(.selectMenu) {
   right: 0;
   left: auto;
@@ -294,7 +293,7 @@
   max-width: min(320px, 90vw);
 }
 
-/* 浏览态徽章配色 */
+/* ===== Priority badges (view mode) ===== */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -317,7 +316,7 @@
   color: var(--pri-high-fg);
 }
 
-/* ========== Icon buttons ========== */
+/* ===== Icon buttons (edit/save/delete/more) ===== */
 .iconBtn {
   display: inline-flex;
   align-items: center;
@@ -341,7 +340,7 @@
   transform: translateY(1px);
 }
 
-/* 固定位置 */
+/* fixed positions for controls */
 .editFixed {
   position: absolute;
   top: 10px;
@@ -361,6 +360,7 @@
   z-index: 3;
 }
 
+/* destructive style variant */
 .iconDanger {
   border-color: rgba(224, 86, 91, 0.35);
   color: #e0565b;
@@ -375,7 +375,7 @@
   background: rgba(224, 86, 91, 0.18);
 }
 
-/* ========== Animations ========== */
+/* ===== Intro animation ===== */
 @keyframes stickerFade {
   from {
     opacity: 0;
@@ -387,7 +387,7 @@
   }
 }
 
-/* ========== Responsive ========== */
+/* ===== Responsive tweaks ===== */
 @media (max-width: 760px) {
   .isEditing + .metaRow {
     grid-template-columns: 1fr;

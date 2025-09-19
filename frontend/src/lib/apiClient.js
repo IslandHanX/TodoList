@@ -1,7 +1,7 @@
 // src/lib/apiClient.js
 const BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
 
-/** 解析响应体：优先 JSON，其次 text，最后 null */
+// best-effort body parser: prefer JSON, then text, else null
 async function parseResponse(res) {
   const ct = res.headers.get("content-type") || "";
   if (res.status === 204) return null;
@@ -12,7 +12,7 @@ async function parseResponse(res) {
       return null;
     }
   }
-  // 非 JSON 的情况作为文本兜底
+  // non-JSON fallback to plain text
   try {
     return await res.text();
   } catch {
@@ -20,17 +20,17 @@ async function parseResponse(res) {
   }
 }
 
+// generic fetch wrapper with FormData + JSON support and rich errors
 async function request(path, { method = "GET", headers = {}, body } = {}) {
-  // 是否是 FormData（例如上传图片时）
   const isFormData =
     typeof FormData !== "undefined" && body instanceof FormData;
 
-  // 只有在不是 FormData 时才默认加 JSON 的 Content-Type
+  // only set JSON content type when not sending FormData
   const finalHeaders = isFormData
     ? headers
     : { "Content-Type": "application/json", ...headers };
 
-  // 只有非 FormData 才 JSON.stringify
+  // stringify body unless it's already a string or FormData
   const finalBody =
     body === undefined
       ? undefined
@@ -48,7 +48,7 @@ async function request(path, { method = "GET", headers = {}, body } = {}) {
       body: finalBody,
     });
   } catch (err) {
-    // 网络错误（断网、CORS、服务器不可达等）
+    // network-level failure (offline, CORS, DNS, etc.)
     const e = new Error("Network error. Please check your connection.");
     e.cause = err;
     throw e;
@@ -57,14 +57,14 @@ async function request(path, { method = "GET", headers = {}, body } = {}) {
   const data = await parseResponse(res);
 
   if (!res.ok) {
-    // 尽量从多种后端格式读取 message
+    // normalize common backend error shapes
     const msg =
       data?.error?.message ??
       data?.message ??
       (typeof data === "string" ? data : "Request failed");
     const error = new Error(msg || `HTTP ${res.status}`);
     error.status = res.status;
-    error.field = data?.error?.field ?? null; // 如果后端返回具体字段（如 'title'）
+    error.field = data?.error?.field ?? null; // optional field-specific error
     error.raw = data;
     throw error;
   }
@@ -72,6 +72,7 @@ async function request(path, { method = "GET", headers = {}, body } = {}) {
   return data;
 }
 
+// minimal HTTP client
 export const apiClient = {
   get: (p) => request(p, { method: "GET" }),
   post: (p, body) => request(p, { method: "POST", body }),

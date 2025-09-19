@@ -4,10 +4,11 @@ import db from "../db.js";
 
 const router = express.Router();
 
-// ---- helpers ----
+// constants for allowed values
 const PRIORITIES = new Set(["low", "medium", "high"]);
 const STATUSES = new Set(["all", "completed", "pending"]);
 
+// map a DB row to the public todo shape
 const rowToTodo = (row) => ({
   id: row.id,
   title: row.title,
@@ -16,7 +17,7 @@ const rowToTodo = (row) => ({
   createdAt: row.createdAt,
 });
 
-// 统一：校验失败 -> 400，同时在控制台输出 warn
+// basic log helpers
 function logWarn(status, message, extra = {}) {
   console.warn(
     `[${new Date().toISOString()}] ${status} ${message}`,
@@ -24,41 +25,35 @@ function logWarn(status, message, extra = {}) {
   );
 }
 
+// unified error response helpers
 function sendError(res, code, message, field, meta = {}) {
-  // 只打印到终端
   console.warn(`[todos] ${code}`, { message, field, ...meta });
   return res.status(code).json({ error: { message, field } });
 }
-
 function badRequest(res, message, field) {
   return sendError(res, 400, message, field);
 }
-
 function notFound(res, message = "Todo not found") {
-  // 打印一条 404 日志，再正常返回
   logWarn(404, message);
   return res.status(404).json({ error: { message } });
 }
-
-// 统一：未知错误 -> 500，同时在控制台输出 error（含堆栈）
 function internalError(req, res, err) {
   console.error(`[todos] 500 ${req.method} ${req.originalUrl}`, err);
   return res.status(500).json({ error: { message: "Internal server error" } });
 }
 
+// input validation + normalization
 function validateTitle(title) {
   const s = String(title ?? "").trim();
   if (!s) return { ok: false, msg: "Title is required", value: "" };
   if (s.length > 200) return { ok: false, msg: "Title is too long (max 200)" };
   return { ok: true, value: s };
 }
-
 function normalizeCompleted(v) {
   if (v === true || v === 1 || v === "1" || v === "true") return 1;
   if (v === false || v === 0 || v === "0" || v === "false") return 0;
   return 0;
 }
-
 function validatePriority(p) {
   if (p == null || p === "") return { ok: true, value: "low" };
   const s = String(p);
@@ -67,9 +62,7 @@ function validatePriority(p) {
   return { ok: true, value: s };
 }
 
-// ---- routes ----
-
-// POST /todos
+// POST /todos - create a todo
 router.post("/", (req, res) => {
   try {
     const { title, completed = false, priority = "low" } = req.body || {};
@@ -100,7 +93,7 @@ router.post("/", (req, res) => {
   }
 });
 
-// GET /todos
+// GET /todos - list todos with optional filters
 router.get("/", (req, res) => {
   try {
     let { q = "", status = "all", priority = "" } = req.query || {};
@@ -139,7 +132,8 @@ router.get("/", (req, res) => {
     sql += " ORDER BY id DESC";
 
     const rows = db.prepare(sql).all(...params);
-    // 可选：查询为空时打印一条 info（不影响返回）
+
+    // lightweight observability for empty result sets
     if (rows.length === 0) {
       console.info(`[${new Date().toISOString()}] 200 SEARCH_EMPTY`, {
         q,
@@ -153,7 +147,7 @@ router.get("/", (req, res) => {
   }
 });
 
-// GET /todos/:id
+// GET /todos/:id - read a single todo
 router.get("/:id", (req, res) => {
   try {
     const row = db
@@ -166,7 +160,7 @@ router.get("/:id", (req, res) => {
   }
 });
 
-// PUT /todos/:id
+// PUT /todos/:id - update a todo
 router.put("/:id", (req, res) => {
   try {
     const id = req.params.id;
@@ -196,7 +190,7 @@ router.put("/:id", (req, res) => {
   }
 });
 
-// DELETE /todos/:id
+// DELETE /todos/:id - delete a todo
 router.delete("/:id", (req, res) => {
   try {
     const info = db

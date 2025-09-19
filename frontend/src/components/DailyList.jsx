@@ -1,6 +1,8 @@
+// src/components/DailyList.jsx
 import Sticker from "./Sticker";
 import styles from "./CalendarSplit.module.css";
 
+// format a date-like value as YYYY-MM-DD for grouping
 function ymd(d) {
   const x = new Date(d);
   const y = x.getFullYear();
@@ -10,11 +12,14 @@ function ymd(d) {
 }
 
 export default function DailyList({ date, todos, onToggle, onDelete, onEdit }) {
+  // compute the day key once from the selected date
   const key = ymd(date);
+  // show only todos created on the selected day
   const list = (todos || []).filter((t) => ymd(t.createdAt) === key);
 
   return (
     <div className={styles.main}>
+      {/* header with date and count */}
       <div className={styles.dayHeader}>
         <h3>
           {key}
@@ -25,6 +30,7 @@ export default function DailyList({ date, todos, onToggle, onDelete, onEdit }) {
         </h3>
       </div>
 
+      {/* empty state vs. grid of todo cards */}
       {list.length === 0 ? (
         <div className={styles.empty}>No todos for this day.</div>
       ) : (

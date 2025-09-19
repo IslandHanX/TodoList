@@ -1,28 +1,34 @@
+// src/components/Sticker.jsx
 import { useState } from "react";
 import Select from "./Select";
 import styles from "./Sticker.module.css";
 import { MdOutlineEdit } from "react-icons/md";
-import { RiDeleteBin5Line, RiMoreFill } from "react-icons/ri"; // 横向三点
+import { RiDeleteBin5Line, RiMoreFill } from "react-icons/ri"; // horizontal ellipsis icon
 import { RiCheckLine, RiCloseLine } from "react-icons/ri";
 
 export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
+  // edit mode state
   const [editing, setEditing] = useState(false);
+  // local form fields
   const [title, setTitle] = useState(todo.title);
   const [priority, setPriority] = useState(todo.priority);
-  const [expanded, setExpanded] = useState(false); // 仅保留展开/收起
+  // expand/collapse for extra actions
+  const [expanded, setExpanded] = useState(false);
 
-  // 进入/取消/保存编辑
+  // enter edit mode with fresh values
   function startEdit() {
-    setExpanded(false); // 进入编辑前先收起
+    setExpanded(false);
     setTitle(todo.title);
     setPriority(todo.priority);
     setEditing(true);
   }
+  // cancel edits and restore original
   function cancelEdit() {
     setEditing(false);
     setTitle(todo.title);
     setPriority(todo.priority);
   }
+  // persist edits via parent handler
   async function saveEdit() {
     const nextTitle = (title || "").trim();
     if (!nextTitle) return;
@@ -34,9 +40,10 @@ export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
     <article
       className={`${styles.card} ${todo.completed ? styles.completed : ""}`}
     >
+      {/* decorative tape */}
       <div className={styles.tape} aria-hidden="true" />
 
-      {/* 固定：右上编辑 */}
+      {/* fixed edit button in the top-right when not editing */}
       {!editing && (
         <button
           className={`${styles.iconBtn} ${styles.editFixed}`}
@@ -47,7 +54,8 @@ export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
           <MdOutlineEdit size={18} />
         </button>
       )}
-      {/* 固定：右下删除 */}
+
+      {/* fixed delete button in the bottom-right when not editing */}
       {!editing && (
         <button
           type="button"
@@ -60,7 +68,7 @@ export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
         </button>
       )}
 
-      {/* 第一行：勾选 + 标题/输入 +（编辑态）按钮 */}
+      {/* row: checkbox + title or textarea + edit actions */}
       <div className={`${styles.row} ${editing ? styles.isEditing : ""}`}>
         <label className={styles.check}>
           <input
@@ -114,7 +122,7 @@ export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
         </div>
       </div>
 
-      {/* 固定：左下三点（所有卡都有） */}
+      {/* fixed three-dots toggle in the bottom-left when not editing */}
       {!editing && (
         <button
           className={`${styles.iconBtn} ${styles.moreBtn}`}
@@ -126,7 +134,7 @@ export default function Sticker({ todo, onToggle, onDelete, onEdit }) {
         </button>
       )}
 
-      {/* 第二行：时间 + 优先级/下拉 */}
+      {/* meta row: timestamp + priority or priority selector */}
       <div className={styles.metaRow}>
         <time className={styles.time}>
           {new Date(todo.createdAt).toLocaleString()}

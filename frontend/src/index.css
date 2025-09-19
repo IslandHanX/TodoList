@@ -1,36 +1,34 @@
 /* frontend/src/index.css */
 
+/* reset + base */
 @import "modern-normalize/modern-normalize.css";
 
-/* 基础 */
+/* layout primitives */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* ===== 设计变量（基础：与主题无关） ===== */
+/* design tokens (theme-agnostic) */
 :root {
   --font-ui: "Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto,
     Inter, "Helvetica Neue", Arial, sans-serif;
   --font-head: "Sora", var(--font-ui);
   --font-hand: "Handlee", var(--font-ui);
 
-  /* 尺寸与间距（通用） */
   --stack-w: min(940px, calc(100% - 24px));
   --gap-sm: 10px;
   --gap-md: 14px;
 
-  /* 圆角（通用；阴影随主题变化，放到主题块里） */
   --radius-lg: 18px;
   --radius-md: 12px;
-  --mesh-gap: 18px; /* 网格间距（改 14~22 都行） */
-  --mesh-line: rgba(93, 64, 39, 0.05); /* 棕色网格线（浅）#5D4027 */
+  --mesh-gap: 18px;
+  --mesh-line: rgba(93, 64, 39, 0.05);
   --mesh-line-dark: rgba(200, 180, 160, 0.07);
 }
 
-/* ===== 默认首帧：无 data-theme 时按系统偏好 ===== */
-/* 1) 默认 Light 变量 */
+/* initial variables when data-theme is not set (light baseline) */
 :root:not([data-theme]) {
   --bg1: #fff7e6;
   --bg2: #fff1c8;
@@ -46,7 +44,6 @@
   --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.08);
 
-  /* 优先级色（亮） */
   --pri-low-bg: #e9f8ee;
   --pri-low-fg: #206b3b;
   --pri-med-bg: #fff1d6;
@@ -54,7 +51,8 @@
   --pri-high-bg: #ffe6e6;
   --pri-high-fg: #8a2a2a;
 }
-/* 2) 系统深色偏好时覆盖为 Dark */
+
+/* dark fallback when system prefers dark and no explicit theme is set */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     --bg1: #0b1226;
@@ -80,7 +78,7 @@
   }
 }
 
-/* ===== 显式主题（useTheme 切换时生效） ===== */
+/* explicit light theme */
 [data-theme="light"] {
   --bg1: #fff7e6;
   --bg2: #fff1c8;
@@ -103,6 +101,8 @@
   --pri-high-bg: #ffe6e6;
   --pri-high-fg: #8a2a2a;
 }
+
+/* explicit dark theme */
 [data-theme="dark"] {
   --bg1: #0b1226;
   --bg2: #0e1c3d;
@@ -126,7 +126,7 @@
   --pri-high-fg: #ffb3b8;
 }
 
-/* ===== 背景与根节点 ===== */
+/* root background and base typography */
 html,
 body,
 #root {
@@ -142,12 +142,13 @@ body {
   position: relative;
 }
 
+/* decorative background gradients */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1; /* 在所有内容下方 */
-  pointer-events: none; /* 不挡交互 */
+  z-index: -1;
+  pointer-events: none;
   background: radial-gradient(
       1200px 600px at 70% -10%,
       var(--bg-accent),
@@ -155,11 +156,10 @@ body::before {
     ),
     radial-gradient(900px 500px at 0% 100%, var(--bg-accent), transparent 55%),
     linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 100%);
-  /* 提前合成，滚动更丝滑 */
   will-change: transform;
 }
 
-/* ===== 通用容器 ===== */
+/* content container */
 .container {
   width: var(--stack-w);
   max-width: none;
@@ -167,8 +167,7 @@ body::before {
   padding: 8px var(--gap-md) 36px;
 }
 
-/* ===== 控件：统一视觉（避免与 Select.module.css 重复） ===== */
-/* 这里只管：输入框、按钮、自定义 Select 的触发器（.selectTrigger） */
+/* unified control skin: inputs, buttons, and custom select trigger */
 .input,
 .button,
 .selectTrigger {
@@ -183,6 +182,7 @@ body::before {
     color 0.2s ease, border-color 0.2s ease;
 }
 
+/* dark skin for inputs and select trigger */
 [data-theme="dark"] .input,
 [data-theme="dark"] .selectTrigger {
   background: #121a2d;
@@ -190,17 +190,20 @@ body::before {
   border-color: var(--border);
 }
 
+/* text input expands within flex */
 .input {
   flex: 1;
   min-width: 0;
 }
 
+/* focus ring for input + trigger */
 .input:focus,
 .selectTrigger:focus-visible {
   box-shadow: 0 0 0 4px rgba(91, 140, 255, 0.15);
   border-color: rgba(91, 140, 255, 0.55);
 }
 
+/* button variants */
 .button {
   background: var(--surface);
   cursor: pointer;
@@ -223,7 +226,7 @@ body::before {
   border-color: var(--border);
 }
 
-/* ===== 工具类 ===== */
+/* utility text + states */
 .text-mute {
   color: var(--ink-mute);
   font-size: 13px;
@@ -244,7 +247,7 @@ body::before {
   margin: -1px;
 }
 
-/* ===== Mobile（通用控件增强，不涉及具体组件） ===== */
+/* mobile control sizes + container padding */
 @media (max-width: 560px) {
   .input,
   .button,
@@ -256,14 +259,15 @@ body::before {
   }
 }
 
+/* checkbox accent + size */
 input[type="checkbox"] {
-  accent-color: var(--accent); /* 或 #ff4da3 */
+  accent-color: var(--accent);
   width: 18px;
   height: 18px;
-  border-radius: 6px; /* 大部分浏览器会尊重圆角 */
+  border-radius: 6px;
 }
 
-/* 上方小日历 + 当天列表的纵向间距 */
+/* vertical rhythm for calendar sidebar + list */
 .calendarStack {
   display: grid;
   gap: 16px;

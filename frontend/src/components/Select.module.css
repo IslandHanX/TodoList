@@ -1,9 +1,11 @@
-/* 根节点仅做定位 */
+/* src/components/Select.module.css */
+
+/* root container used for positioning the popover */
 .selectRoot {
   position: relative;
 }
 
-/* 触发器：只放布局/过渡（外观仍由全局 .selectTrigger 统一） */
+/* trigger layout and motion; visual skin comes from global .selectTrigger */
 .selectTrigger {
   display: flex;
   align-items: center;
@@ -14,13 +16,14 @@
   transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-/* 值与箭头 */
+/* label text inside the trigger */
 .selectValue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* caret animation */
 .selectCaret {
   transition: transform 0.15s ease;
   opacity: 0.9;
@@ -29,7 +32,7 @@
   transform: rotate(180deg);
 }
 
-/* 下拉菜单 */
+/* dropdown panel */
 .selectMenu {
   position: absolute;
   left: 0;
@@ -45,7 +48,7 @@
   z-index: 60;
 }
 
-/* 选项 */
+/* option row */
 .selectOption {
   display: flex;
   align-items: center;
@@ -56,17 +59,19 @@
   cursor: pointer;
   transition: background 0.12s ease, color 0.12s ease;
 }
-.selectOptionHover,
+
+/* hover/active share the same background */
 .selectOptionActive {
-  /* hover/active 使用相同底色 */
   background: rgba(91, 140, 255, 0.08);
 }
+
+/* selected state emphasizes background and weight */
 .selectOptionSelected {
   background: rgba(91, 140, 255, 0.12);
   font-weight: 600;
 }
 
-/* Dark theme 调整（属性选择器可与 module 一起工作） */
+/* dark theme adjustments */
 [data-theme="dark"] .selectMenu {
   background: #0f1629cc;
   color: var(--ink);
@@ -80,7 +85,7 @@
   background: rgba(91, 140, 255, 0.22);
 }
 
-/* 手机端更易点（专属选择器的补充；通用高度已在 index.css 的 @media 做了） */
+/* touch-friendly rounding on small screens */
 @media (max-width: 560px) {
   .selectTrigger {
     border-radius: 14px;

@@ -1,4 +1,6 @@
-/* ===== 上方小日历容器 ===== */
+/* src/components/MiniCalendar.css */
+
+/* container for the mini calendar + spacing to the day list */
 .sidebar {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -7,12 +9,13 @@
   box-shadow: var(--shadow-md);
   width: 100%;
   max-width: 100%;
-  overflow: hidden; /* 防止内部元素外溢 */
+  overflow: hidden;
   box-sizing: border-box;
-  margin-bottom: 16px; /* 与当天列表拉开距离 */
+  margin-bottom: 16px;
+  /* space below the calendar block */
 }
 
-/* 顶部：月份与切换按钮 */
+/* header row: month label + prev/next buttons */
 .sideHeader {
   display: flex;
   align-items: center;
@@ -31,7 +34,7 @@
   cursor: pointer;
 }
 
-/* 星期头：与日期网格使用一致列与间距 */
+/* weekday labels aligned to the grid below */
 .weekHeader {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -42,14 +45,14 @@
   text-align: center;
 }
 
-/* 日期网格 */
+/* 7-column calendar grid */
 .miniGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
 }
 
-/* 单个日期格 */
+/* individual day cell */
 .miniCell {
   position: relative;
   box-sizing: border-box;
@@ -71,13 +74,13 @@
   opacity: 0.5;
 }
 
-/* 选中态：用边框+inset 阴影，兼容 overflow 裁切 */
+/* selected date state */
 .selected {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(182, 139, 46, 0.25) inset;
 }
 
-/* 有任务的小红点 */
+/* small indicator dot for days with tasks */
 .dot {
   position: absolute;
   bottom: 6px;
@@ -88,11 +91,12 @@
   background: #ff5656;
 }
 
-/* ===== 当天列表 ===== */
+/* container for the selected day's list */
 .main {
   min-height: 420px;
 }
 
+/* header above the day's items (title + count) */
 .dayHeader {
   display: flex;
   align-items: center;
@@ -113,7 +117,7 @@
   padding: 12px 4px;
 }
 
-/* 卡片网格（复用 TodoGrid 的排版） */
+/* card grid for tasks of the selected day */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -121,7 +125,7 @@
   margin-top: 2px;
 }
 
-/* ===== Dark 主题优化 ===== */
+/* dark theme overrides */
 :global([data-theme="dark"]) .sidebar {
   background: rgba(17, 26, 46, 0.92);
   border-color: rgba(255, 255, 255, 0.08);

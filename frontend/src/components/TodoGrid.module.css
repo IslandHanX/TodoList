@@ -1,6 +1,9 @@
+/* src/components/TodoGrid.module.css */
+
+/* responsive card grid; only bottom padding for visual rhythm */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 12px;
-  padding: 0 0 24px; /* ← 去掉左右，只保留下边距 */
+  padding: 0 0 24px;
 }

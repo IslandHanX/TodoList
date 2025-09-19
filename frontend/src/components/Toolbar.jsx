@@ -11,11 +11,12 @@ export default function Toolbar({
   priority,
   setPriority,
 }) {
+  // local input value to debounce text search
   const [localQ, setLocalQ] = useState(q);
   const firstRender = useRef(true);
   const timer = useRef(null);
 
-  // 搜索输入：debounce 后同步到 App（App 的 useEffect 接力触发查询）
+  // debounce the search text and push to parent after 300ms
   useEffect(() => {
     if (firstRender.current) return;
     if (timer.current) clearTimeout(timer.current);
@@ -23,10 +24,12 @@ export default function Toolbar({
     return () => clearTimeout(timer.current);
   }, [localQ, setQ]);
 
+  // mark first render so we don't fire a request on mount
   useEffect(() => {
     firstRender.current = false;
   }, []);
 
+  // layout: search + status filter + priority filter
   return (
     <div className={styles.toolbar}>
       <div className={styles.searchGroup}>
@@ -51,7 +54,7 @@ export default function Toolbar({
       <Select
         ariaLabel="Status"
         value={status}
-        onChange={(v) => setStatus(v)} // ← 不再手动 onApply
+        onChange={(v) => setStatus(v)} // updates parent; fetch handled upstream
         options={[
           { value: "all", label: "All" },
           { value: "completed", label: "Completed" },
@@ -63,7 +66,7 @@ export default function Toolbar({
       <Select
         ariaLabel="Priority"
         value={priority}
-        onChange={(v) => setPriority(v)} // ← 不再手动 onApply
+        onChange={(v) => setPriority(v)} // updates parent; fetch handled upstream
         options={[
           { value: "", label: "All" },
           { value: "low", label: "low" },

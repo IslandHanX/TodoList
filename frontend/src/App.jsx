@@ -17,22 +17,24 @@ import { useTheme } from "./hooks/useTheme";
 import { useTodos } from "./hooks/useTodos";
 
 export default function App() {
-  // 主题
+  // theme state
   const { dark, setDark } = useTheme();
 
-  // 业务：todos
+  // todos data + CRUD handlers from hook
   const { orderedTodos, loading, error, load, add, toggle, edit, remove } =
     useTodos();
 
-  // 筛选 & 视图
+  // search/filter + current view
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [priority, setPriority] = useState("");
-  const [view, setView] = useState("list"); // 'list' | 'calendar' | 'board'
+  const [view, setView] = useState("list"); // "list" | "calendar" | "board"
 
-  // 小日历状态
+  // mini calendar state
   const [miniMonth, setMiniMonth] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(() => new Date());
+
+  // precompute a set of YYYY-MM-DD keys that have todos (for calendar dots)
   const daysWithTodos = useMemo(() => {
     const s = new Set();
     for (const t of orderedTodos) {
@@ -46,21 +48,22 @@ export default function App() {
     return s;
   }, [orderedTodos]);
 
-  // 弹窗
+  // modal helpers
   const [modal, setModal] = useState({ open: false, title: "", message: "" });
   const openModal = (title, message) =>
     setModal({ open: true, title, message });
   const closeModal = () => setModal({ open: false, title: "", message: "" });
 
-  // 首次加载
+  // initial fetch
   useEffect(() => {
     load({ q, status, priority }).catch((e) =>
       openModal("Search failed", e.message || "Something went wrong.")
     );
+    // deps intentionally left empty to run once on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 筛选变化 → 自动请求
+  // re-fetch when filters change and show a friendly empty-state dialog
   useEffect(() => {
     (async () => {
       try {
@@ -73,10 +76,11 @@ export default function App() {
         openModal("Search failed", e.message || "Something went wrong.");
       }
     })();
+    // managed by custom hook; we only depend on filter values
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, status, priority]);
 
-  // 公用：按当前筛选刷新
+  // helper: refresh with current filters and handle empty results
   async function applyFilters() {
     try {
       const data = await load({ q, status, priority });
@@ -89,7 +93,7 @@ export default function App() {
     }
   }
 
-  // CRUD 回调
+  // CRUD callbacks that refresh the view
   async function handleAdd({ title, priority }) {
     try {
       await add({ title, priority });
@@ -125,6 +129,7 @@ export default function App() {
 
   return (
     <div>
+      {/* app header with theme + view controls */}
       <Header
         dark={dark}
         onToggleTheme={() => setDark((v) => !v)}
@@ -133,9 +138,10 @@ export default function App() {
       />
 
       <div className="container">
+        {/* composer for adding new todos */}
         <Composer onAdd={handleAdd} />
 
-        {/* 工具条（自动应用筛选） */}
+        {/* toolbar with live filters */}
         <Toolbar
           q={q}
           setQ={setQ}
@@ -145,11 +151,12 @@ export default function App() {
           setPriority={setPriority}
         />
 
+        {/* error and loading states */}
         {error && <div className="error">{error}</div>}
-
         {loading ? (
           <div className="text-mute">Loading…</div>
         ) : view === "calendar" ? (
+          // calendar split view: mini calendar + daily list
           <div className="calendarStack">
             <MiniCalendar
               monthDate={miniMonth}
@@ -176,6 +183,7 @@ export default function App() {
             />
           </div>
         ) : view === "board" ? (
+          // kanban board view
           <BoardView
             todos={orderedTodos}
             onToggle={handleToggle}
@@ -183,6 +191,7 @@ export default function App() {
             onEdit={handleEdit}
           />
         ) : (
+          // default: responsive grid of todos
           <TodoGrid
             todos={orderedTodos}
             onToggle={handleToggle}
@@ -192,6 +201,7 @@ export default function App() {
         )}
       </div>
 
+      {/* global modal for non-blocking notices */}
       <Modal
         open={modal.open}
         title={modal.title}

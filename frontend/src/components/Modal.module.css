@@ -1,4 +1,6 @@
-/* ===== Modal (module) ===== */
+/* src/components/Modal.module.css */
+
+/* full-screen overlay with blur + backdrop */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -12,6 +14,7 @@
   background: rgba(0, 0, 0, 0.45);
 }
 
+/* modal panel container */
 .modal {
   width: min(520px, calc(100% - 32px));
   background: var(--surface);
@@ -22,6 +25,7 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* modal title */
 .modalTitle {
   margin: 0 0 8px 0;
   font-family: var(--font-head);
@@ -31,6 +35,7 @@
   text-align: center;
 }
 
+/* modal message text */
 .modalMessage {
   margin: 0 0 14px 0;
   color: var(--ink);
@@ -39,6 +44,7 @@
   line-height: 1.5;
 }
 
+/* actions row (buttons) */
 .modalActions {
   display: flex;
   justify-content: center;

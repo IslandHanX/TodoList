@@ -1,29 +1,32 @@
 /* src/components/Toolbar.module.css */
 
+/* toolbar: search input + two selects, spaced above results */
 .toolbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 220px 220px;
   gap: 14px;
   align-items: center;
-
-  /* 新增：与下方贴纸列表拉开距离 */
   margin-bottom: 25px;
 }
 
+/* search field with clear button */
 .searchGroup {
   min-width: 0;
   display: flex;
   gap: 8px;
 }
 
-/* 让输入框吃满 */
+/* make the input fill available width */
 .searchGroup :global(.input) {
   width: 100%;
 }
+
+/* let Select root stretch in grid cell */
 :global(.selectRoot) {
   width: 100%;
 }
 
+/* collapse to a single column on tablets/phones */
 @media (max-width: 920px) {
   .toolbar {
     grid-template-columns: 1fr;

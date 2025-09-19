@@ -5,17 +5,21 @@ import styles from "./Select.module.css";
 export default function Select({
   value,
   onChange,
-  options = [], // [{ value:"low", label:"low" }, ...]
+  options = [], // array of { value, label }
   placeholder = "Select",
   ariaLabel = "Select",
-  className = "", // 兼容：透传到根节点，便于额外布局
+  className = "", // extra className passthrough for layout hooks
   style,
 }) {
+  // popover open/close state
   const [open, setOpen] = useState(false);
+
+  // element refs for click-outside, focus return, and list keyboard nav
   const rootRef = useRef(null);
   const btnRef = useRef(null);
   const listRef = useRef(null);
 
+  // find the index of the current value for keyboard navigation
   const indexByValue = useMemo(
     () => options.findIndex((o) => o.value === value),
     [options, value]
@@ -24,7 +28,7 @@ export default function Select({
     indexByValue >= 0 ? indexByValue : 0
   );
 
-  // 关闭菜单：点击外部 & ESC
+  // close when clicking outside the component or pressing Escape
   useEffect(() => {
     function onDocDown(e) {
       if (!rootRef.current) return;
@@ -41,13 +45,18 @@ export default function Select({
     };
   }, []);
 
-  // 打开菜单后滚动到活动项
+  // when opening, scroll the active option into view
   useEffect(() => {
     if (!open) return;
     const el = listRef.current?.querySelector('[data-active="true"]');
     if (el) el.scrollIntoView({ block: "nearest" });
   }, [open, activeIndex]);
 
+  useEffect(() => {
+    if (indexByValue >= 0) setActiveIndex(indexByValue);
+  }, [indexByValue]);
+
+  // commit a selection and return focus to the trigger
   function commit(i) {
     const opt = options[i];
     if (!opt) return;
@@ -56,6 +65,7 @@ export default function Select({
     btnRef.current?.focus();
   }
 
+  // keyboard support on the trigger button
   function onTriggerKey(e) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -71,6 +81,7 @@ export default function Select({
     }
   }
 
+  // keyboard support inside the listbox
   function onListKey(e) {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -84,6 +95,7 @@ export default function Select({
     }
   }
 
+  // label shown on the trigger (fallback to placeholder)
   const label = options.find((o) => o.value === value)?.label ?? placeholder;
 
   return (
@@ -95,7 +107,7 @@ export default function Select({
       <button
         type="button"
         ref={btnRef}
-        /* 叠加全局外观 + 模块布局样式 */
+        // merge global button skin and module layout styles
         className={`selectTrigger ${styles.selectTrigger}`}
         aria-haspopup="listbox"
         aria-expanded={open}
