@@ -1,0 +1,164 @@
+/* ===== 上方小日历容器 ===== */
+.sidebar {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 12px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden; /* 防止内部元素外溢 */
+  box-sizing: border-box;
+  margin-bottom: 16px; /* 与当天列表拉开距离 */
+}
+
+/* 顶部：月份与切换按钮 */
+.sideHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.monthTitle {
+  font-weight: 700;
+}
+.navBtn {
+  height: 28px;
+  min-width: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* 星期头：与日期网格使用一致列与间距 */
+.weekHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  text-align: center;
+}
+
+/* 日期网格 */
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* 单个日期格 */
+.miniCell {
+  position: relative;
+  box-sizing: border-box;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+.miniCell:hover {
+  filter: brightness(0.98);
+}
+.dim {
+  opacity: 0.5;
+}
+
+/* 选中态：用边框+inset 阴影，兼容 overflow 裁切 */
+.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(182, 139, 46, 0.25) inset;
+}
+
+/* 有任务的小红点 */
+.dot {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff5656;
+}
+
+/* ===== 当天列表 ===== */
+.main {
+  min-height: 420px;
+}
+
+.dayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.dayHeader h3 {
+  margin: 0;
+}
+
+.count {
+  color: var(--ink-mute);
+  font-weight: 500;
+  font-size: 14px;
+}
+.empty {
+  color: var(--ink-mute);
+  padding: 12px 4px;
+}
+
+/* 卡片网格（复用 TodoGrid 的排版） */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 2px;
+}
+
+/* ===== Dark 主题优化 ===== */
+:global([data-theme="dark"]) .sidebar {
+  background: rgba(17, 26, 46, 0.92);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+:global([data-theme="dark"]) .monthTitle {
+  color: #e9ecf8;
+}
+:global([data-theme="dark"]) .weekHeader {
+  color: #cfd6ee;
+  opacity: 0.95;
+}
+:global([data-theme="dark"]) .miniCell {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #e9ecf8;
+}
+:global([data-theme="dark"]) .miniCell:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+:global([data-theme="dark"]) .dim {
+  opacity: 0.45;
+  filter: none;
+}
+:global([data-theme="dark"]) .selected {
+  border-color: rgba(91, 140, 255, 0.9);
+  box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.22) inset;
+}
+:global([data-theme="dark"]) .navBtn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e9ecf8;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+:global([data-theme="dark"]) .navBtn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+:global([data-theme="dark"]) .dot {
+  background: #ff5d73;
+  box-shadow: 0 0 0 2px rgba(17, 26, 46, 0.92);
+}

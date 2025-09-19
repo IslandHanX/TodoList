@@ -1,0 +1,59 @@
+/* src/components/Header.module.css */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 6px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-head);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* 右上角一排图标按钮 */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease,
+    color 0.15s ease, border-color 0.15s ease;
+}
+
+.iconBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+:global([data-theme="dark"]) .iconBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.iconBtn:active {
+  transform: translateY(1px);
+}
+
+/* 当前选中的视图高亮 */
+.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}

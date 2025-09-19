@@ -1,0 +1,46 @@
+/* ===== Modal (module) ===== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.28);
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(2px);
+}
+[data-theme="dark"] .modalOverlay {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal {
+  width: min(520px, calc(100% - 32px));
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow-lg);
+}
+
+.modalTitle {
+  margin: 0 0 8px 0;
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+.modalMessage {
+  margin: 0 0 14px 0;
+  color: var(--ink);
+  opacity: 0.9;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}

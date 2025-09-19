@@ -1,0 +1,57 @@
+/* 布局保持你之前的网格 */
+.composer {
+  display: grid;
+  grid-template-columns: 1fr 160px auto;
+  gap: 10px;
+  padding: 0 0 16px;
+}
+
+/* 图标“Add”按钮（桌面：与输入同高，方形） */
+.addBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.06s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  padding: 0; /* 去掉默认内边距 */
+  font-size: 18px; /* “+” 更清晰 */
+}
+.addBtn:hover {
+  filter: brightness(1.05);
+  box-shadow: var(--shadow-lg);
+}
+.addBtn:active {
+  transform: translateY(1px);
+}
+.addBtn:focus-visible {
+  outline: 2px solid rgba(91, 140, 255, 0.9);
+  outline-offset: 2px;
+}
+
+[data-theme="dark"] .addBtn {
+  background: color-mix(in srgb, var(--accent) 88%, white 12%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 小屏：一列堆叠，按钮与输入/选择器“同宽” */
+@media (max-width: 560px) {
+  .composer {
+    grid-template-columns: 1fr;
+  }
+  .select {
+    width: 100% !important;
+  }
+  .addBtn {
+    width: 100%; /* ← 关键：占满这一列 */
+    height: 44px; /* 和输入控件同高 */
+    font-size: 20px; /* “+” 稍微大一点 */
+    border-radius: 12px; /* 造型保持一致 */
+  }
+}

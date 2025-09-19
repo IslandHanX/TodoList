@@ -1,0 +1,35 @@
+/* src/components/Toolbar.module.css */
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px 220px;
+  gap: 14px;
+  align-items: center;
+
+  /* 新增：与下方贴纸列表拉开距离 */
+  margin-bottom: 25px;
+}
+
+.searchGroup {
+  min-width: 0;
+  display: flex;
+  gap: 8px;
+}
+
+/* 让输入框吃满 */
+.searchGroup :global(.input) {
+  width: 100%;
+}
+:global(.selectRoot) {
+  width: 100%;
+}
+
+@media (max-width: 920px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+    margin-bottom: 25px;
+  }
+  .searchGroup {
+    width: 100%;
+  }
+}

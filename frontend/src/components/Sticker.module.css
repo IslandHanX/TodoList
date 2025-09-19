@@ -1,0 +1,411 @@
+/* ========== Card ========== */
+.card {
+  --card-min-h: 180px;
+  --icon-pad: 56px;
+
+  position: relative;
+  min-height: var(--card-min-h);
+  padding: 16px var(--icon-pad) 28px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--sticker-card);
+  box-shadow: var(--shadow-md);
+  overflow: visible;
+  z-index: 0;
+
+  transition: transform 0.18s ease, box-shadow 0.22s ease,
+    background-image 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
+
+  background-image: radial-gradient(
+      150px 80px at 18% 12%,
+      rgba(255, 255, 255, 0.22),
+      transparent 65%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      var(--mesh-line) 0 1px,
+      transparent 1px var(--mesh-gap)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--mesh-line) 0 1px,
+      transparent 1px var(--mesh-gap)
+    );
+  animation: stickerFade 0.35s ease both;
+}
+.card:hover,
+.card:focus-within {
+  z-index: 10;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  filter: brightness(1.04) saturate(1.03);
+  background-image: radial-gradient(
+      180px 95px at 18% 12%,
+      rgba(255, 255, 255, 0.38),
+      transparent 70%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      to bottom,
+      var(--mesh-line) 0 1px,
+      transparent 1px var(--mesh-gap)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--mesh-line) 0 1px,
+      transparent 1px var(--mesh-gap)
+    );
+}
+
+/* 完成态 */
+.completed {
+  filter: brightness(0.92) saturate(0.85);
+  opacity: 0.9;
+}
+.completed:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  filter: brightness(0.92) saturate(0.85);
+}
+
+/* Dark */
+[data-theme="dark"] .card {
+  background-color: var(--sticker-card);
+  background-image: radial-gradient(
+      300px 170px at 16% 10%,
+      rgba(255, 255, 255, 0.1),
+      transparent 82%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      to bottom,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    );
+}
+[data-theme="dark"] .card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background-image: radial-gradient(
+      320px 180px at 16% 10%,
+      rgba(255, 255, 255, 0.16),
+      transparent 84%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      to bottom,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    );
+}
+[data-theme="dark"] .completed,
+[data-theme="dark"] .completed:hover,
+[data-theme="dark"] .completed:focus-within {
+  transform: none; /* 不上浮 */
+  box-shadow: var(--shadow-md); /* 不加阴影 */
+  filter: brightness(0.86) saturate(0.75); /* 保持完成态的黯淡 */
+  z-index: 0; /* 不抬层级 */
+  background-image: radial-gradient(
+      300px 170px at 16% 10%,
+      rgba(255, 255, 255, 0.1),
+      transparent 82%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      to bottom,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    ),
+    repeating-linear-gradient(
+      to right,
+      var(--mesh-line-dark) 0 1px,
+      transparent 1px var(--mesh-gap)
+    );
+  /* 上面这段 background-image 与暗色普通卡片一致，用来覆盖 .card:hover 的高光 */
+}
+
+/* 纸胶带 */
+.tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 20px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+[data-theme="dark"] .tape {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* ========== Layout ========== */
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto; /* checkbox | title/input | right ops */
+  gap: 10px;
+  align-items: center;
+}
+.row > :nth-child(2) {
+  min-width: 0;
+}
+.check {
+  display: flex;
+  align-items: center;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 编辑态：右侧操作区换行到底部 */
+.isEditing {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.isEditing .right {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* 标题 / 折叠 */
+.title {
+  margin: 0;
+  font-family: var(--font-hand);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: 0.2px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.done {
+  text-decoration: line-through;
+  color: var(--ink-mute);
+}
+
+.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 3; /* ← 标准草案属性（新版浏览器逐步支持） */
+  -webkit-line-clamp: 3; /* ← 现阶段主要依赖这个 */
+  overflow: hidden;
+}
+
+/* 编辑输入 */
+.editInput {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  resize: none;
+  line-height: 1.3;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  max-height: 40vh;
+  overflow: auto;
+}
+
+/* 第二行：时间 | 优先级（默认两列） */
+.metaRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  padding-left: 44px;
+  padding-right: 120px;
+}
+
+/* 浏览态：徽章固定右下 */
+.metaRow > .badge {
+  position: absolute;
+  right: calc(12px + 32px + 8px);
+  bottom: 10px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* 编辑态行：收窄右侧并缩小时间字号 */
+.isEditing + .metaRow {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding-right: 44px;
+}
+.isEditing + .metaRow .time {
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.7;
+  margin-top: 2px;
+  overflow: hidden;           /* 超出隐藏 */
+  text-overflow: ellipsis;
+}
+
+/* 时间（默认） */
+.time {
+  font-size: 13px;
+  line-height: 1.2;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+/* —— 下拉宽度约束（防止撑出卡片） —— */
+.prioritySelect {
+  width: 160px; /* 常规宽度 */
+  max-width: 160px; /* 给 auto 列“确定宽度” */
+  min-width: 0;
+  justify-self: end;
+}
+/* 覆盖 Select 的全局触发器 100% 宽度（仅卡片内） */
+.prioritySelect :global(.selectTrigger) {
+  width: auto;
+}
+/* 菜单靠右对齐，避免向右溢出卡片 */
+.prioritySelect :global(.selectMenu) {
+  right: 0;
+  left: auto;
+  min-width: 100%;
+  max-width: min(320px, 90vw);
+}
+
+/* 浏览态徽章配色 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+.pri_low {
+  background: var(--pri-low-bg) !important;
+  color: var(--pri-low-fg);
+}
+.pri_medium {
+  background: var(--pri-med-bg) !important;
+  color: var(--pri-med-fg);
+}
+.pri_high {
+  background: var(--pri-high-bg) !important;
+  color: var(--pri-high-fg);
+}
+
+/* ========== Icon buttons ========== */
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+}
+.iconBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+[data-theme="dark"] .iconBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.iconBtn:active {
+  transform: translateY(1px);
+}
+
+/* 固定位置 */
+.editFixed {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 3;
+}
+.deleteFixed {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  z-index: 3;
+}
+.moreBtn {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  z-index: 3;
+}
+
+.iconDanger {
+  border-color: rgba(224, 86, 91, 0.35);
+  color: #e0565b;
+}
+.iconDanger:hover {
+  background: rgba(224, 86, 91, 0.12);
+}
+[data-theme="dark"] .iconDanger {
+  color: #ff8086;
+}
+[data-theme="dark"] .iconDanger:hover {
+  background: rgba(224, 86, 91, 0.18);
+}
+
+/* ========== Animations ========== */
+@keyframes stickerFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 760px) {
+  .isEditing + .metaRow {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 8px;
+    padding-right: 16px;
+  }
+  .prioritySelect {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-self: stretch;
+  }
+}
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .right {
+    justify-self: end;
+  }
+}

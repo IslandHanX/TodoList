@@ -1,0 +1,19 @@
+/* src/components/BoardView.css */
+.board {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:16px;
+  margin-top: 12px;
+}
+.board-col {
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  min-height: 300px;
+}
+.board-col-head { font-weight:700; margin-bottom:8px; opacity:.85; }
+.board-col-body { display:grid; gap:12px; }
+@media (max-width: 840px) {
+  .board { grid-template-columns: 1fr; }
+}

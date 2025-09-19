@@ -1,0 +1,66 @@
+# -----------------------------
+# OS / Editor
+# -----------------------------
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# -----------------------------
+# Node monorepo common
+# -----------------------------
+**/node_modules/
+**/.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -----------------------------
+# Build outputs (all UIs)
+# -----------------------------
+**/dist/
+**/build/
+**/.cache/
+**/.vite/
+**/.parcel-cache/
+**/.next/
+**/.nuxt/
+**/.svelte-kit/
+coverage/
+
+# -----------------------------
+# Env & local config
+# -----------------------------
+.env
+.env.*
+!.env.example
+*.local
+
+# -----------------------------
+# SQLite / DB files
+# （包含 WAL/SHM 等临时文件）
+# -----------------------------
+*.db
+*.db-*
+*.db-journal
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+backend/todos.db*
+backend/*.sqlite*
+backend/*.db*
+
+# -----------------------------
+# App-specific temp / uploads
+# -----------------------------
+backend/uploads/
+backend/tests/tmp/
+
+# -----------------------------
+# Docker (可选的本地覆盖文件)
+# -----------------------------
+docker-compose.override.yml
