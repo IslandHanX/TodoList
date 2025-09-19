@@ -23,9 +23,6 @@ docker-compose logs -f web
 - **Frontend (nginx):** http://localhost:8080
 - **API:** http://localhost:4000
 
-> Note: In Docker mode the frontend is a static production build served by nginx.  
-> Ensure `frontend/.env` had `VITE_API_BASE=http://localhost:4000` **before** building the image.
-
 ### Option B — Run locally
 
 ```bash
