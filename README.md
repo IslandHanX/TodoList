@@ -35,7 +35,6 @@ Todo Check is a full-stack todo management application with a separated frontend
 
 ### Development Tools
 - **Docker** - Containerization
-- **Jest** - Testing framework
 - **ESLint** - Code linting
 - **Nodemon** - Development hot reload
 
