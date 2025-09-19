@@ -1,4 +1,4 @@
-# Todo Check - Todo Management Application
+# My Todo List - Todo Management Application
 
 A modern todo management application with multiple view modes (list, calendar, board) and complete CRUD operations.
 
