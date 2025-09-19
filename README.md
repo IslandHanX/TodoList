@@ -9,7 +9,7 @@ A tiny full-stack todo app:
 
 ## 1) How to install & run
 
-### Option A — Run locally (recommended for development)Run with Docker Compose (for a local “prod-like” run)
+### Option A — Run with Docker Compose (for a local “prod-like” run)
 
 ```bash
 # from repo root
