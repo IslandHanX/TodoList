@@ -49,6 +49,7 @@ VITE_API_BASE=http://localhost:4000
 
 Open the frontend at the URL Vite prints (usually http://localhost:5173).  
 The app will call the API at `http://localhost:4000`.
+
 ---
 
 ## 2) How to run the tests
