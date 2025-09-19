@@ -196,7 +196,7 @@ Fetch a single todo.
 
 **Not Found**
 
-````
+```
 404 Not Found
 { "error": { "message": "Todo not found" } }
 ```
