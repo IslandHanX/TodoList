@@ -77,8 +77,9 @@ These tests cover:
 ## 3) API reference
 
 Base URL: `http://localhost:4000`
+Health check: GET / → {"ok":true,"service":"sticker-todo-api"}
 
-All responses are JSON. Errors are **structured** like:
+Errors: JSON shape is always:
 
 ```json
 {
@@ -97,7 +98,7 @@ List todos with optional filters.
 
 - `q` _(string)_ – fuzzy search in title (max 200 chars, trimmed)
 - `status` _(string)_ – one of `all|completed|pending` (default `all`)
-- `priority` _(string)_ – one of `low|medium|high` (optional)
+- `priority` _(string)_ – one of `low|medium|high` (optional; omit for “all”)
 
 **Example**
 
@@ -106,13 +107,32 @@ GET /todos?q=milk&status=pending&priority=high
 200 OK
 [
   {
-    "id": 42,
+    "id": 11,
     "title": "Buy milk",
     "completed": false,
     "priority": "high",
-    "createdAt": "2025-09-19T11:43:22.000Z"
+    "createdAt": "2025-09-19T17:11:34.571Z"
+  },
+  {
+    "id": 10,
+    "title": "hello",
+    "completed": false,
+    "priority": "low",
+    "createdAt": "2025-09-19T17:00:13.715Z"
   }
 ]
+```
+
+**Validation errors**
+
+```
+GET /todos?status=weird
+400 Bad Request
+{ "error": { "message": "Invalid status (all|completed|pending)", "field": "status" } }
+
+GET /todos?priority=urgent
+400 Bad Request
+{ "error": { "message": "Invalid priority", "field": "priority" } }
 ```
 
 ### `POST /todos`
@@ -129,17 +149,23 @@ Create a todo.
 }
 ```
 
-**Validation**
-
-- `title` required, trimmed, **max 200 chars**
-- `priority` must be one of `low|medium|high` (defaults to `low`)
-
 **Success**
 
 ```
 201 Created
-{ "id": 43, "title": "Buy milk", "completed": false, "priority": "low", "createdAt": "2025-09-19T11:43:22.000Z" }
+{
+  "id": 11,
+  "title": "Buy milk",
+  "completed": false,
+  "priority": "high",
+  "createdAt": "2025-09-19T17:11:34.571Z"
+}
 ```
+
+**Validation**
+
+- `title` required, trimmed, **max 200 chars**
+- `priority` must be one of `low|medium|high` (defaults to `low`)
 
 **Error (examples)**
 
@@ -155,27 +181,47 @@ Create a todo.
 
 Fetch a single todo.
 
+**Success**
+
 ```
-GET /todos/99999
+200 OK
+{
+  "id": 10,
+  "title": "hello",
+  "completed": false,
+  "priority": "low",
+  "createdAt": "2025-09-19T17:00:13.715Z"
+}
+```
+
+**Not Found**
+
+````
 404 Not Found
 { "error": { "message": "Todo not found" } }
 ```
 
 ### `PUT /todos/:id`
 
-Update fields on a todo.
+Update fields on a todo (partial updates allowed). All updated fields are validated.
 
-**Body** (partial allowed; all fields validated)
+**Body**
 
 ```json
 { "title": "New title", "completed": true, "priority": "medium" }
-```
+````
 
 **Success**
 
 ```
 200 OK
-{ "id": 43, "title": "New title", "completed": true, "priority": "medium", "createdAt": "..." }
+{
+  "id": 1,
+  "title": "wjefhioawhfoawehfoiawehfioahfoiebfioaw",
+  "completed": true,
+  "priority": "low",
+  "createdAt": "2025-09-19T16:56:58.757Z"
+}
 ```
 
 **Typical errors**
@@ -191,6 +237,8 @@ Update fields on a todo.
 ### `DELETE /todos/:id`
 
 Delete a todo.
+
+**Success**
 
 ```
 204 No Content
@@ -285,25 +333,7 @@ docker-compose.yml      # Orchestration for api + web
 
 ---
 
-## 7) Troubleshooting
-
-- **Frontend can’t reach API:** Ensure `frontend/.env` has `VITE_API_BASE=http://localhost:4000` _before_ `npm run build` / Docker build.
-- **500 with SQLite** (“readonly database”): if you move to a mounted volume, ensure the container user owns the DB file and directory (`chown -R app:app /data` and open with write perms).
-- **See server logs:**
-  ```bash
-  # dev
-  cd backend && npm run dev
-  ```
-
-# docker
-
-docker-compose logs -f api
-
-````
-
----
-
-## 8) Useful curl examples
+## 7) Useful curl examples
 
 ```bash
 # List
@@ -321,7 +351,7 @@ curl -X PUT http://localhost:4000/todos/1 \
 
 # Delete
 curl -X DELETE http://localhost:4000/todos/1
-````
+```
 
 ---
 

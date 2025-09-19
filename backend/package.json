@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "node tests/todos.test.mjs"
   },
   "main": "index.js",
   "keywords": [],
