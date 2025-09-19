@@ -220,13 +220,13 @@ docker-compose.yml      # Orchestration for api + web
 
 ---
 
-## 6) Limitations / known issues (being honest)
+## 6) Limitations / known issues
 
 - **SQLite persistence in Docker.** In the current setup, the DB file lives inside the API container image (under `/app/backend/todos.db`). Rebuilding the image can reset data. If you need persistence across rebuilds, mount a volume and point the DB path there (or switch to a managed DB).
 - **No auth / multi-user separation.** It’s a demo app; all data is global.
 - **Validation is minimal.** Only title & priority are validated; no rate limiting, etc.
 - **Voice input availability.** Web Speech API support varies by browser/OS and language.
-- **CORS:** Backend currently allows `*` for simplicity. Lock this down in production.
+- **CORS:** Backend currently allows `*` for simplicity. Need to lock this down in production.
 
 ---
 
