@@ -355,4 +355,3 @@ curl -X DELETE http://localhost:4000/todos/1
 
 ---
 
-If anything doesn’t work as written, please open an issue or ping me—happy to fix the docs so the steps are guaranteed reproducible.
